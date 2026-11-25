@@ -1115,22 +1115,36 @@ async function runAIGenerator() {
   const topik = document.getElementById('ai-topik').value.trim();
   if (!topik) return showToast('Masukkan topik materi SKI terlebih dahulu.', true);
 
-  const prompt = `Bertindaklah sebagai Guru Senior Sejarah Kebudayaan Islam (SKI) MTs Kementerian Agama RI yang menerapkan Kurikulum Berbasis Cinta (KBC). Buatkan ${jenis} untuk Kelas ${kelas} MTs dengan topik "${topik}" yang mengintegrasikan pilar "${pilar}". Susun secara sistematis, humanis, menyentuh hati siswa, dan sertakan ibrah/keteladanan sejarahnya dalam Bahasa Indonesia yang baku.`;
+  const prompt = `Bertindaklah sebagai Guru Senior Sejarah Kebudayaan Islam (SKI) MTs Kementerian Agama RI yang menerapkan Kurikulum Berbasis Cinta (KBC).
+Buatkan ${jenis} secara LENGKAP, MENDALAM, dan SIAP PAKAI untuk MTs Kelas ${kelas} dengan topik "${topik}" yang mengintegrasikan pilar "${pilar}".
+
+Wajib mencakup komponen berikut secara terperinci (minimal 600 kata):
+1. Identitas Perangkat (Mata Pelajaran SKI, Kelas ${kelas} MTs, Topik, Alokasi Waktu, Pilar KBC: ${pilar}).
+2. Capaian Pembelajaran (CP) & Tujuan Pembelajaran (TP) Berbasis Cinta.
+3. Pemahaman Bermakna & Pertanyaan Pemantik yang menyentuh nurani siswa.
+4. Uraian Materi Inti Sejarah & Ibrah/Keteladanan Tokoh.
+5. Langkah Kegiatan Pembelajaran Lengkap (Pendahuluan, Kegiatan Inti dengan sintaks Feel – Imagine – Do – Share secara rinci beserta estimasi menit, dan Penutup).
+6. Asesmen Pembelajaran (Penilaian Sikap, Soal Latihan Pengetahuan beserta Kunci Jawaban, dan Penilaian Keterampilan/Aksi Nyata).
+
+Gunakan Bahasa Indonesia yang baku, humanis, dan rapi.`;
 
   const out = document.getElementById('ai-output');
-  out.value = 'Sedang menyusun ' + jenis + ' topik "' + topik + '" berbasis KBC...';
+  out.value = 'Sedang menyusun ' + jenis + ' topik "' + topik + '" secara lengkap dengan Gemini AI (mohon tunggu 5–15 detik)...';
 
-  if (state.gasUrl) {
-    const res = await apiCall({ action: 'generateAI', apiKey: state.geminiKey, prompt });
-    if (res && res.status === 'success') {
-      out.value = res.text;
-      showToast('Konten SKI (KBC) berhasil dibuat oleh AI!');
-      return;
-    }
+  if (!state.gasUrl) {
+    out.value = 'Gagal: URL Web App Google Apps Script belum terpasang di Pengaturan.';
+    return showToast('URL Google Apps Script belum terpasang.', true);
   }
 
-  out.value = `=== ${jenis.toUpperCase()} ===\nJenjang: MTs Kelas ${kelas}\nTopik SKI: ${topik}\nIntegrasi KBC: ${pilar}\n\n1. TUJUAN PEMBELAJARAN BERBASIS CINTA:\nPeserta didik mampu memahami peristiwa sejarah ${topik}, menggali keteladanan kasih sayang serta perdamaian tokoh Islam, dan menginternalisasi nilai ${pilar}.\n\n2. LANGKAH KEGIATAN (FEEL – IMAGINE – DO):\n- Feel (Merasakan): Tadabbur kisah sejarah yang menyentuh nurani.\n- Imagine (Membayangkan): Diskusi hikmah peradaban Islam.\n- Do (Melakukan): Aksi nyata meneladani akhlak mulia di madrasah.\n\n(Catatan: Hubungkan URL Web App GAS & Gemini API Key untuk generasi penuh otomatis).`;
-  showToast('Kerangka tersusun!');
+  const res = await apiCall({ action: 'generateAI', apiKey: state.geminiKey, prompt });
+  if (res && res.status === 'success') {
+    out.value = res.text;
+    showToast('Konten SKI (KBC) lengkap berhasil dibuat oleh AI!');
+  } else {
+    const errMsg = res && res.message ? res.message : 'Tidak ada respons dari server Google Apps Script.';
+    out.value = 'GAGAL MENGHUBUNGI GEMINI AI:\n' + errMsg + '\n\nPastikan:\n1. API Key Gemini sudah ditempel di Code.gs (PERMANENT_GEMINI_KEY) atau di menu 17. Pengaturan & Backup.\n2. Setelah mengedit Code.gs, Anda sudah klik Terapkan (Deploy) -> Kelola deployment -> Edit -> Versi baru -> Terapkan.';
+    showToast('Gagal generate AI: ' + errMsg, true);
+  }
 }
 
 async function saveAIResultToDB() {
