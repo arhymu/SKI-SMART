@@ -1,0 +1,25 @@
+{
+  "name": "SKI SMART – Administrasi Guru SKI MTs",
+  "short_name": "SKI SMART",
+  "description": "Aplikasi Administrasi Guru Sejarah Kebudayaan Islam MTs Kurikulum Berbasis Cinta",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0F294A",
+  "theme_color": "#0F294A",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
