@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ski-smart-pwa-v1';
+const CACHE_NAME = 'ski-smart-pwa-v2';
 const CORE_ASSETS = [
   './',
   './index.html',
